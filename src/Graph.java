@@ -23,10 +23,8 @@ public class Graph {
      */
     public Graph(boolean edgesGiven) {
         
-        // TODO
         this.vertices = new HashMap<>();
         this.allUndirectedEdges = new ArrayList<>();
-        //this.resultMST = new ArrayList<>();
         this.edgesGiven = edgesGiven;
 
     }
@@ -40,7 +38,6 @@ public class Graph {
      */
     public void addVertex(Vertex v) throws IllegalArgumentException {
         
-        // TODO
         String key = v.getName();
 
         if (vertices.containsKey(key)) {
@@ -58,8 +55,6 @@ public class Graph {
      */
     public Collection<Vertex> getVertices() {
 
-        // TODO
-
         return vertices.values();
     }
 
@@ -74,7 +69,6 @@ public class Graph {
      */
     public void addEdge(String nameU, String nameV, Double weight) throws IllegalArgumentException {
         
-        // TODO
         if (edgesGiven) {
             Vertex u = vertices.get(nameU);
             Vertex v = vertices.get(nameV);
@@ -101,7 +95,6 @@ public class Graph {
      */
     public void addUndirectedEdge(String nameU, String nameV, double weight) {
         
-        // TODO
         if (edgesGiven) {
             addEdge(nameU, nameV, weight);
             addEdge(nameV, nameU, weight);
@@ -126,15 +119,13 @@ public class Graph {
         if (edgesGiven) {
             int pow = 2;
 
-            // TODO
             // compute distance of all adjacent edges of each vertex
             for (Vertex v : vertices.values()) {
                 for (Edge e : v.adjacentEdges) {
                     Vertex s = e.getSource();
                     Vertex t = e.getTarget();
 
-                    Double dist = Math.sqrt(Math.pow(s.getX() - t.getX(), pow) +
-                            Math.pow(s.getY() - t.getY(), pow));
+                    Double dist = s.getDistanceTo(t);
 
                     e.setDistance(dist);
                 }
@@ -145,8 +136,7 @@ public class Graph {
                 Vertex s = e.getSource();
                 Vertex t = e.getTarget();
 
-                Double dist = Math.sqrt(Math.pow(s.getX() - t.getX(), pow) +
-                        Math.pow(s.getY() - t.getY(), pow));
+                Double dist = s.getDistanceTo(t);
 
                 e.setDistance(dist);
             }
@@ -163,7 +153,6 @@ public class Graph {
     public void populateAllEdges() {
         int pow = 2;
         
-        // TODO
         if (!edgesGiven) {
             Collection<Vertex> vCollection = getVertices();
             Vertex[] vertices = vCollection.toArray(new Vertex[vCollection.size()]);
@@ -173,8 +162,7 @@ public class Graph {
                     // create undirected edge and compute its Euclidean distance, add to list
                     Vertex s = vertices[i];
                     Vertex t = vertices[i+j];
-                    Double dist = Math.sqrt(Math.pow(s.getX() - t.getX(), pow) +
-                            Math.pow(s.getY() - t.getY(), pow));
+                    Double dist = s.getDistanceTo(t);
                     Edge e = new Edge(s, t, dist);
                     allUndirectedEdges.add(e);
                 }
@@ -187,12 +175,12 @@ public class Graph {
     }
 
     /**
-     * TODO: add Javadoc comments
+     * Algorithm to find the Minimum Spanning Tree of this graph. Utilizes DisjointSet.java
+     * @return the MST
      */
     public ArrayList<Edge> runKruskalsAlg() {
         // if resultMST is already computed, return the resultMST at first
         
-        // TODO
         if (resultMST != null) {
             return resultMST;
         } else {
@@ -205,17 +193,14 @@ public class Graph {
 
             Iterator<Edge> iter = allUndirectedEdges.iterator();
 
-            System.out.println("Finding MST");
             while (resultMST.size() < getVertices().size() - 1 && iter.hasNext()) {
                  Edge e = iter.next();
-                 System.out.println("\tExamining edge " + e + ", length: " + e.getDistance());
                  Vertex u = e.getSource();
                  Vertex v = e.getTarget();
 
                  if (ds.find(u) != ds.find(v)) {
                      ds.union(u, v);
                      resultMST.add(e);
-                     System.out.println("\t\tAdded this edge.");
                  }
             }
 

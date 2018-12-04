@@ -6,11 +6,18 @@
  */
 public class DisjointSet {
 
+    /**
+     * Constructor.
+     */
     public DisjointSet() {}
 
+    /**
+     * Finds the root of a given vertex
+     * @param v vertex being "found"
+     * @return the root of v
+     */
     public Vertex find(Vertex v) {
         
-        // TODO
         while (v != v.getSentinel()) {
             v = v.getSentinel().getSentinel();
         }
@@ -18,9 +25,13 @@ public class DisjointSet {
         return v;
     }
 
+    /**
+     * Merges two sets (may be the same set)
+     * @param v1 vertex from first set
+     * @param v2 vertex from second set
+     */
     public void union(Vertex v1, Vertex v2) {
         
-        // TODO
         Vertex root1 = find(v1);
         Vertex root2 = find(v2);
         if (root1.getSize() <= root2.getSize()) {
