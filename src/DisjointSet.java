@@ -19,7 +19,8 @@ public class DisjointSet {
     public Vertex find(Vertex v) {
         
         while (v != v.getSentinel()) {
-            v = v.getSentinel().getSentinel();
+            v.setSentinel(v.getSentinel().getSentinel());
+            v = v.getSentinel();
         }
 
         return v;
