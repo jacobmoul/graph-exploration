@@ -10,6 +10,8 @@ public class Vertex {
     public ArrayList<Edge> adjacentEdges; // the adjacent edges of this vertex
 
     // TODO: add additional instance variables to work with Disjoint Set
+    private Vertex sentinel;
+    private int size;
 
     public Vertex(String name, int x, int y) {
         this.name = name;
@@ -18,6 +20,8 @@ public class Vertex {
         adjacentEdges = new ArrayList<>();
 
         // TODO: initialize your new instance variables
+        this.sentinel = this;
+        this.size = 1;
     }
 
     public String getName() {
@@ -33,6 +37,18 @@ public class Vertex {
     }
 
     // TODO: add getters and setters for your new instance variables
+
+    public int getSize() { return size; }
+
+    public void increaseSize(int amount) {
+        this.size += amount;
+    }
+
+    public void setSentinel(Vertex v) {
+        this.sentinel = v;
+    }
+
+    public Vertex getSentinel() { return sentinel; }
 
     public double getDistanceTo(Vertex o) {
         double squareDis = Math.pow(x - o.getX(), 2) + Math.pow(y - o.getY(), 2);

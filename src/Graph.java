@@ -1,7 +1,15 @@
+/*
+ * NAME: Jacob Moul
+ * PID: A13548393
+ */
+
 import java.util.*;
 
-/*
- * TODO: add class header
+/**
+ * Class that creates a vertex-edge graph.
+ *
+ * @author Jacob Moul A13548393
+ * @since 12/04/2018
  */
 public class Graph {
 
@@ -16,6 +24,10 @@ public class Graph {
     public Graph(boolean edgesGiven) {
         
         // TODO
+        this.vertices = new HashMap<>();
+        this.allUndirectedEdges = new ArrayList<>();
+        //this.resultMST = new ArrayList<>();
+        this.edgesGiven = edgesGiven;
 
     }
 
@@ -29,6 +41,13 @@ public class Graph {
     public void addVertex(Vertex v) throws IllegalArgumentException {
         
         // TODO
+        String key = v.getName();
+
+        if (vertices.containsKey(key)) {
+            throw new IllegalArgumentException();
+        } else {
+            vertices.put(key, v);
+        }
 
     }
 
@@ -41,7 +60,7 @@ public class Graph {
 
         // TODO
 
-        return null;
+        return vertices.values();
     }
 
     /**
@@ -56,7 +75,19 @@ public class Graph {
     public void addEdge(String nameU, String nameV, Double weight) throws IllegalArgumentException {
         
         // TODO
+        if (edgesGiven) {
+            Vertex u = vertices.get(nameU);
+            Vertex v = vertices.get(nameV);
 
+            if (u == null || v == null) {
+                throw new IllegalArgumentException();
+            }
+
+            Edge e = new Edge(u, v, weight);
+            u.addEdge(e);
+        } else {
+            System.out.println("Graph fully connected; cannot add another edge.");
+        }
     }
 
     /**
@@ -71,6 +102,18 @@ public class Graph {
     public void addUndirectedEdge(String nameU, String nameV, double weight) {
         
         // TODO
+        if (edgesGiven) {
+            addEdge(nameU, nameV, weight);
+            addEdge(nameV, nameU, weight);
+
+            // add undirected edge to allUndirectedEdges
+            Vertex u = vertices.get(nameU);
+            Vertex v = vertices.get(nameV);
+            Edge e = new Edge(u, v, weight);
+            allUndirectedEdges.add(e);
+        } else {
+            System.out.println("Graph fully connected; cannot add another undirected edge.");
+        }
 
     }
 
@@ -79,8 +122,37 @@ public class Graph {
      * allUndirectedEdges. If edgesGiven is false, directly return at first.
      */
     public void computeAllEuclideanDistances() {
-        
-        // TODO
+
+        if (edgesGiven) {
+            int pow = 2;
+
+            // TODO
+            // compute distance of all adjacent edges of each vertex
+            for (Vertex v : vertices.values()) {
+                for (Edge e : v.adjacentEdges) {
+                    Vertex s = e.getSource();
+                    Vertex t = e.getTarget();
+
+                    Double dist = Math.sqrt(Math.pow(s.getX() - t.getX(), pow) +
+                            Math.pow(s.getY() - t.getY(), pow));
+
+                    e.setDistance(dist);
+                }
+            }
+
+            // compute distance of all undirected edges
+            for (Edge e : allUndirectedEdges) {
+                Vertex s = e.getSource();
+                Vertex t = e.getTarget();
+
+                Double dist = Math.sqrt(Math.pow(s.getX() - t.getX(), pow) +
+                        Math.pow(s.getY() - t.getY(), pow));
+
+                e.setDistance(dist);
+            }
+        } else {
+            System.out.println("Euclidean distances already defined, cannot recompute.");
+        }
 
     }
 
@@ -89,8 +161,28 @@ public class Graph {
      * is false. If edgesGiven is true, directly return at first.
      */
     public void populateAllEdges() {
+        int pow = 2;
         
         // TODO
+        if (!edgesGiven) {
+            Collection<Vertex> vCollection = getVertices();
+            Vertex[] vertices = vCollection.toArray(new Vertex[vCollection.size()]);
+
+            for (int i = 0; i < vertices.length; i++) {
+                for (int j = 0; i + j < vertices.length; j++) {
+                    // create undirected edge and compute its Euclidean distance, add to list
+                    Vertex s = vertices[i];
+                    Vertex t = vertices[j];
+                    Double dist = Math.sqrt(Math.pow(s.getX() - t.getX(), pow) +
+                            Math.pow(s.getY() - t.getY(), pow));
+                    Edge e = new Edge(s, t, dist);
+                    allUndirectedEdges.add(e);
+                }
+            }
+
+        } else {
+            System.out.println("Edges have been defined by user.");
+        }
         
     }
 
@@ -101,7 +193,33 @@ public class Graph {
         // if resultMST is already computed, return the resultMST at first
         
         // TODO
+        if (resultMST == null) {
+            return resultMST;
+        } else {
+            if (!edgesGiven) {
+                populateAllEdges();
+            }
+            resultMST = new ArrayList<>();
+            DisjointSet ds = new DisjointSet();
+            Collections.sort(allUndirectedEdges, Comparator.comparingDouble(e -> e.getDistance()));
 
-        return null;
+            Iterator<Edge> iter = allUndirectedEdges.iterator();
+
+            while (resultMST.size() < getVertices().size() - 1) {
+                if (iter.hasNext()) {
+                    Edge e = iter.next();
+                    Vertex u = e.getSource();
+                    Vertex v = e.getTarget();
+
+                    if (ds.find(u) != ds.find(v)) {
+                        ds.union(u, v);
+                        resultMST.add(e);
+                    }
+                }
+            }
+
+            return resultMST;
+        }
+
     }
 }
