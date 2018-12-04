@@ -169,10 +169,10 @@ public class Graph {
             Vertex[] vertices = vCollection.toArray(new Vertex[vCollection.size()]);
 
             for (int i = 0; i < vertices.length; i++) {
-                for (int j = 0; i + j < vertices.length; j++) {
+                for (int j = 1; i + j < vertices.length; j++) {
                     // create undirected edge and compute its Euclidean distance, add to list
                     Vertex s = vertices[i];
-                    Vertex t = vertices[j];
+                    Vertex t = vertices[i+j];
                     Double dist = Math.sqrt(Math.pow(s.getX() - t.getX(), pow) +
                             Math.pow(s.getY() - t.getY(), pow));
                     Edge e = new Edge(s, t, dist);
@@ -193,7 +193,7 @@ public class Graph {
         // if resultMST is already computed, return the resultMST at first
         
         // TODO
-        if (resultMST == null) {
+        if (resultMST != null) {
             return resultMST;
         } else {
             if (!edgesGiven) {
@@ -205,17 +205,18 @@ public class Graph {
 
             Iterator<Edge> iter = allUndirectedEdges.iterator();
 
-            while (resultMST.size() < getVertices().size() - 1) {
-                if (iter.hasNext()) {
-                    Edge e = iter.next();
-                    Vertex u = e.getSource();
-                    Vertex v = e.getTarget();
+            System.out.println("Finding MST");
+            while (resultMST.size() < getVertices().size() - 1 && iter.hasNext()) {
+                 Edge e = iter.next();
+                 System.out.println("\tExamining edge " + e + ", length: " + e.getDistance());
+                 Vertex u = e.getSource();
+                 Vertex v = e.getTarget();
 
-                    if (ds.find(u) != ds.find(v)) {
-                        ds.union(u, v);
-                        resultMST.add(e);
-                    }
-                }
+                 if (ds.find(u) != ds.find(v)) {
+                     ds.union(u, v);
+                     resultMST.add(e);
+                     System.out.println("\t\tAdded this edge.");
+                 }
             }
 
             return resultMST;

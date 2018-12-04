@@ -21,12 +21,14 @@ public class DisjointSet {
     public void union(Vertex v1, Vertex v2) {
         
         // TODO
-        if (v1.getSize() <= v2.getSize()) {
-            v1.setSentinel(v2);
-            v2.increaseSize(v1.getSize());
+        Vertex root1 = find(v1);
+        Vertex root2 = find(v2);
+        if (root1.getSize() <= root2.getSize()) {
+            root1.setSentinel(root2);
+            root2.increaseSize(root1.getSize());
         } else {
-            v2.setSentinel(v1);
-            v1.increaseSize(v2.getSize());
+            root2.setSentinel(root1);
+            root1.increaseSize(root2.getSize());
         }
         
     }
