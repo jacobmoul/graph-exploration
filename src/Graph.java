@@ -198,12 +198,10 @@ public class Graph {
                  Vertex u = e.getSource();
                  Vertex v = e.getTarget();
 
-                 System.out.println("I'm checking disjointness");
                  if (ds.find(u) != ds.find(v)) {
                      ds.union(u, v);
                      resultMST.add(e);
                  }
-                 System.out.println("I finished.");
             }
 
             return resultMST;
